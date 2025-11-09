@@ -75,6 +75,20 @@
 
     .toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
     .toggle input{accent-color:#57c7ff}
+  
+    /* Mobile (iPhone portrait) optimizations */
+    @media (max-width: 430px){
+      .wrap{max-width:100%;padding:16px;margin:12px auto}
+      .grid{grid-template-columns:1fr;gap:12px}
+      .row{flex-wrap:wrap}
+      .badge{font-size:14px}
+      input[type=number]{width:100%;font-size:18px;padding:14px 12px}
+      .actions{display:grid;grid-template-columns:1fr;gap:8px}
+      button{width:100%;min-height:44px;padding:14px 16px;font-size:16px;border-radius:14px}
+      .drawArea{height:180px}
+      .stats{gap:8px}
+      .stat{flex:1}
+    }
   </style>
 </head>
 <body>
@@ -216,7 +230,7 @@
     }
 
     function reset(silent=false){
-      state.counts = { common:0, rare:0, epic:0 };
+      state.counts = { common:10, rare:0, epic:0 }; // default after reset per request
       state.history = [];
       // Clear draw area content entirely and show default hint
       drawArea.innerHTML = '<div class="hint">Nothing drawn yet.</div>';
@@ -314,11 +328,9 @@
         render();
         console.assert(drawBtn.disabled === true, 'Draw button should be disabled when bag is empty');
 
-        // Test 4: reset clears history and draw area
-        state.counts = { common: 1, rare: 1, epic: 1 };
-        draw();
-        console.assert(state.history.length > 0 && drawArea.querySelector('.token'), 'Prereq: need a token on screen');
+        // Test 4: reset sets counts to 10/0/0 and clears history + draw area
         reset();
+        console.assert(state.counts.common === 10 && state.counts.rare === 0 && state.counts.epic === 0, 'Reset did not set counts to 10/0/0');
         console.assert(state.history.length === 0, 'Reset did not clear history');
         console.assert(!drawArea.querySelector('.token'), 'Reset did not clear last drawn token');
 
@@ -328,11 +340,11 @@
         state.settings.showOdds = true; render();
         console.assert(oddsStat.style.display !== 'none', 'Odds stat should be visible when showOdds=true');
 
-        // Test 6: reset button click handler is wired and calls reset()
-        state.counts = { common:2, rare:2, epic:2 };
+        // Test 6: reset button click handler is wired and calls reset() with new defaults
+        state.counts = { common:2, rare:2, epic:2 }; render();
         draw();
         resetBtn.click();
-        console.assert(state.history.length === 0 && total() === 0, 'Reset button click did not trigger reset');
+        console.assert(state.counts.common === 10 && total() === 10 && state.history.length === 0, 'Reset button click did not trigger reset to 10/0/0');
       } catch(e){
         console.error('Self-tests failed:', e);
       } finally {
