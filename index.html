@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Massive Darkness 2 – Treasure Bag</title>
+  <style>
+    :root{
+      --bg:#0b0f13;--panel:#121821;--muted:#97a1b1;--text:#e9eef5;--accent:#66d9ff;
+      --common:#9aa4b2;--rare:#5aa1ff;--epic:#c084fc;--warning:#ff8b5a;--ok:#8bffb5;
+      --card:#0f141c;--border:#1c2533;--shadow:0 8px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(1200px 600px at 20% -10%,#132030 0%,transparent 55%),
+                 radial-gradient(1000px 800px at 120% 0%,#1b2435 0%,transparent 60%),var(--bg);color:var(--text);
+         font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;}
+
+    .wrap{max-width:920px;margin:40px auto;padding:24px}
+    .header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .title{font-weight:700;font-size:clamp(20px,3.2vw,28px);letter-spacing:.2px}
+    .subtitle{color:var(--muted);font-size:14px}
+
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+    @media (max-width:880px){.grid{grid-template-columns:1fr;}}
+
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+          border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+    .card h2{margin:2px 0 14px;font-size:16px;font-weight:700;letter-spacing:.3px}
+
+    .controls{display:grid;grid-template-columns:1fr;gap:14px}
+
+    .row{display:flex;align-items:center;gap:12px}
+    .row label{min-width:92px;display:flex;align-items:center;gap:8px}
+
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px;border:1px solid var(--border);background:var(--card)}
+    .dot{width:10px;height:10px;border-radius:50%}
+    .dot.common{background:var(--common)}
+    .dot.rare{background:var(--rare)}
+    .dot.epic{background:var(--epic)}
+
+    input[type=number]{width:110px;background:#0b111a;border:1px solid var(--border);color:var(--text);
+      padding:10px 12px;border-radius:10px;font-size:15px}
+    input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{opacity:1}
+
+    .hint{color:var(--muted);font-size:12px}
+
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+    button{appearance:none;border:1px solid var(--border);background:linear-gradient(180deg,#1a2331,#121a25);
+      color:var(--text);padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:transform .04s ease,opacity .2s ease,filter .2s ease}
+    button:hover{filter:brightness(1.05)}
+    button:active{transform:translateY(1px)}
+    button.primary{border-color:transparent;background:linear-gradient(180deg,#57c7ff,#379bdf)}
+    button.warn{background:linear-gradient(180deg,#ff9a7a,#e66b42);border-color:transparent}
+    button.ghost{background:transparent}
+    button:disabled{opacity:.5;cursor:not-allowed}
+
+    .drawArea{display:grid;place-items:center;height:210px;border-radius:16px;border:1px dashed var(--border);
+      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));position:relative;overflow:hidden}
+    .token{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:999px;border:1px solid var(--border);
+       font-size:18px;font-weight:800;letter-spacing:.2px;background:var(--card);box-shadow:0 4px 16px rgba(0,0,0,.35);opacity:0;transform:translateY(12px);animation:pop .4s ease forwards}
+    .token .dot{width:14px;height:14px}
+    @keyframes pop{to{opacity:1;transform:translateY(0)}}
+
+    .stats{display:flex;gap:14px;flex-wrap:wrap}
+    .stat{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--border);
+      border-radius:12px;padding:10px 12px;font-weight:700}
+    .stat small{display:block;color:var(--muted);font-weight:600}
+
+    .history{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:var(--card);font-weight:700;font-size:12px}
+
+    .footer{margin-top:10px;color:var(--muted);font-size:12px}
+    a{color:var(--accent)}
+
+    .toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+    .toggle input{accent-color:#57c7ff}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <div class="title">Massive Darkness 2 — Treasure Bag</div>
+        <div class="subtitle">Adjust counts for Common, Rare, and Epic treasures. Draw returns the token to the bag (with replacement). The bag always equals the counts in the inputs. Your bag is saved in this browser.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Bag setup</h2>
+        <div class="controls" role="group" aria-label="Treasure counts">
+          <div class="row">
+            <label class="badge" for="commonInput"><span class="dot common"></span> Common</label>
+            <input id="commonInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Common tokens" />
+            <span class="hint" id="commonHint"></span>
+          </div>
+          <div class="row">
+            <label class="badge" for="rareInput"><span class="dot rare"></span> Rare</label>
+            <input id="rareInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Rare tokens" />
+            <span class="hint" id="rareHint"></span>
+          </div>
+          <div class="row">
+            <label class="badge" for="epicInput"><span class="dot epic"></span> Epic</label>
+            <input id="epicInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Epic tokens" />
+            <span class="hint" id="epicHint"></span>
+          </div>
+          <div class="actions">
+            <button id="drawBtn" type="button" class="primary" title="Draw one token (with replacement)">Draw token</button>
+            <button id="resetBtn" type="button" class="warn" title="Reset counts, history, and last draw">Reset</button>
+            <label class="toggle" title="Toggle visibility of odds">
+              <input type="checkbox" id="toggleOdds" checked /> Show odds
+            </label>
+          </div>
+        </div>
+
+        <div class="footer">Tip: Use ↑/↓ in the inputs for quick adjustments. Everything updates live.</div>
+      </section>
+
+      <section class="card">
+        <h2>Draw</h2>
+        <div class="drawArea" id="drawArea" aria-live="polite" aria-atomic="true">
+          <div class="hint">Nothing drawn yet.</div>
+        </div>
+        <div class="stats" style="margin-top:12px">
+          <div class="stat"><small>Total in bag</small><span id="total">0</span></div>
+          <div class="stat" id="oddsStat"><small>Next draw odds</small>
+            <span id="odds">—</span>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <h2 style="margin-bottom:8px">History</h2>
+          <div class="history" id="history"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer" style="margin-top:18px">
+      Massive Darkness 2 is © CMON. This is a fan-made helper with no affiliation. Use at your own table 😊
+    </div>
+  </div>
+
+  <script>
+    const inputs = {
+      common: document.getElementById('commonInput'),
+      rare: document.getElementById('rareInput'),
+      epic: document.getElementById('epicInput')
+    };
+    const hints = {
+      common: document.getElementById('commonHint'),
+      rare: document.getElementById('rareHint'),
+      epic: document.getElementById('epicHint')
+    };
+    const drawBtn = document.getElementById('drawBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const drawArea = document.getElementById('drawArea');
+    const totalEl = document.getElementById('total');
+    const oddsEl = document.getElementById('odds');
+    const oddsStat = document.getElementById('oddsStat');
+    const historyEl = document.getElementById('history');
+    const toggleOdds = document.getElementById('toggleOdds');
+
+    const COLORS = { common: 'var(--common)', rare:'var(--rare)', epic:'var(--epic)' };
+
+    const state = {
+      counts: { common: 0, rare: 0, epic: 0 },
+      history: [], // e.g., ['common','epic'] (last item is most recent)
+      settings: { showOdds: true }
+    };
+
+    // Load/save
+    function save(){ try{ localStorage.setItem('md2_bag_state', JSON.stringify(state)); }catch(_){} }
+    function load(){
+      try{
+        const raw = localStorage.getItem('md2_bag_state');
+        if(raw){
+          const s = JSON.parse(raw);
+          if(s && s.counts) state.counts = s.counts; // will be reset on init per requirement
+          if(Array.isArray(s.history)) state.history = s.history; // will be reset on init
+          if(s && s.settings) state.settings = Object.assign({showOdds:true}, s.settings);
+        }
+      }catch(_){}
+    }
+
+    function clampInt(v){ v = parseInt(v,10); return isNaN(v)||v<0?0:v; }
+
+    function total(){ return state.counts.common + state.counts.rare + state.counts.epic; }
+
+    function updateFromInputs(){
+      state.counts.common = clampInt(inputs.common.value);
+      state.counts.rare   = clampInt(inputs.rare.value);
+      state.counts.epic   = clampInt(inputs.epic.value);
+      render(); save();
+    }
+
+    function setInputsFromState(){
+      inputs.common.value = state.counts.common;
+      inputs.rare.value   = state.counts.rare;
+      inputs.epic.value   = state.counts.epic;
+      toggleOdds.checked  = !!state.settings.showOdds;
+    }
+
+    function draw(){
+      const t = total();
+      if(t<=0) return;
+      const r = Math.random() * t; // weighted by current input counts
+      const {common,rare,epic} = state.counts;
+      let pick;
+      if(r < common){ pick='common'; }
+      else if(r < common + rare){ pick='rare'; }
+      else { pick='epic'; }
+      // with replacement: do NOT modify counts
+      state.history.push(pick);
+      showToken(pick);
+      render(); save();
+    }
+
+    function reset(silent=false){
+      state.counts = { common:0, rare:0, epic:0 };
+      state.history = [];
+      // Clear draw area content entirely and show default hint
+      drawArea.innerHTML = '<div class="hint">Nothing drawn yet.</div>';
+      render();
+      save();
+    }
+
+    function showToken(kind){
+      drawArea.innerHTML = '';
+      const el = document.createElement('div');
+      el.className = 'token';
+      el.setAttribute('role','status');
+      el.setAttribute('aria-label', kind + ' drawn');
+      const dot = document.createElement('span');
+      dot.className = `dot ${kind}`;
+      const label = document.createElement('span');
+      label.textContent = kind.charAt(0).toUpperCase() + kind.slice(1);
+      el.appendChild(dot); el.appendChild(label);
+      drawArea.appendChild(el);
+    }
+
+    function render(){
+      setInputsFromState();
+
+      // Hints per line
+      hints.common.textContent = `${state.counts.common} in bag`;
+      hints.rare.textContent   = `${state.counts.rare} in bag`;
+      hints.epic.textContent   = `${state.counts.epic} in bag`;
+
+      const t = total();
+      totalEl.textContent = t;
+      drawBtn.disabled = t===0;
+
+      // Odds text & visibility
+      oddsStat.style.display = state.settings.showOdds ? '' : 'none';
+      if(t>0){
+        const pC = Math.round((state.counts.common/t)*100);
+        const pR = Math.round((state.counts.rare/t)*100);
+        const pE = Math.round((state.counts.epic/t)*100);
+        oddsEl.innerHTML = `<span class="pill"><span class="dot common"></span> ${pC}%</span> `+
+                           `<span class="pill"><span class="dot rare"></span> ${pR}%</span> `+
+                           `<span class="pill"><span class="dot epic"></span> ${pE}%</span>`;
+      } else {
+        oddsEl.textContent = '—';
+        if(!drawArea.querySelector('.token')){ drawArea.innerHTML = '<div class="hint">Nothing in the bag.</div>'; }
+      }
+
+      // History
+      historyEl.innerHTML = '';
+      for(let i = state.history.length-1; i>=0; i--){
+        const kind = state.history[i];
+        const pill = document.createElement('span');
+        pill.className = 'pill';
+        pill.style.borderColor = 'var(--border)';
+        pill.innerHTML = `<span class="dot ${kind}"></span> ${kind.charAt(0).toUpperCase()+kind.slice(1)}`;
+        historyEl.appendChild(pill);
+      }
+    }
+
+    // Wire up
+    for(const k of Object.keys(inputs)){
+      inputs[k].addEventListener('input', updateFromInputs);
+      inputs[k].addEventListener('change', updateFromInputs);
+    }
+    drawBtn.addEventListener('click', draw);
+    resetBtn.addEventListener('click', reset);
+    toggleOdds.addEventListener('change', ()=>{ state.settings.showOdds = toggleOdds.checked; render(); save(); });
+
+    // Init — per request, perform a reset on load
+    load();
+    reset(true); // clears counts, history, and draw area on load
+
+    // --- Minimal test cases (console) ---
+    // These run once on load and do not affect the user's saved state.
+    (function runTests(){
+      const deepClone = (o)=>JSON.parse(JSON.stringify(o));
+      const prev = deepClone(state);
+      try{
+        // Test 1: with replacement — counts unchanged after a draw
+        state.counts = { common: 10, rare: 5, epic: 5 };
+        render();
+        const before = deepClone(state.counts);
+        const beforeHist = state.history.length;
+        draw();
+        console.assert(JSON.stringify(state.counts) === JSON.stringify(before), 'Counts changed on with-replacement draw');
+        console.assert(state.history.length === beforeHist + 1, 'History did not record draw');
+
+        // Test 2: odds sum to ~100 (allowing rounding error)
+        const t = total();
+        const sum = Math.round((state.counts.common/t)*100) + Math.round((state.counts.rare/t)*100) + Math.round((state.counts.epic/t)*100);
+        console.assert(Math.abs(sum - 100) <= 1, 'Odds percentages do not sum to ~100');
+
+        // Test 3: draw disabled when total is 0
+        state.counts = { common:0, rare:0, epic:0 };
+        render();
+        console.assert(drawBtn.disabled === true, 'Draw button should be disabled when bag is empty');
+
+        // Test 4: reset clears history and draw area
+        state.counts = { common: 1, rare: 1, epic: 1 };
+        draw();
+        console.assert(state.history.length > 0 && drawArea.querySelector('.token'), 'Prereq: need a token on screen');
+        reset();
+        console.assert(state.history.length === 0, 'Reset did not clear history');
+        console.assert(!drawArea.querySelector('.token'), 'Reset did not clear last drawn token');
+
+        // Test 5: odds toggle hides/shows the odds stat
+        state.settings.showOdds = false; render();
+        console.assert(oddsStat.style.display === 'none', 'Odds stat should be hidden when showOdds=false');
+        state.settings.showOdds = true; render();
+        console.assert(oddsStat.style.display !== 'none', 'Odds stat should be visible when showOdds=true');
+
+        // Test 6: reset button click handler is wired and calls reset()
+        state.counts = { common:2, rare:2, epic:2 };
+        draw();
+        resetBtn.click();
+        console.assert(state.history.length === 0 && total() === 0, 'Reset button click did not trigger reset');
+      } catch(e){
+        console.error('Self-tests failed:', e);
+      } finally {
+        // restore user state
+        state.counts = prev.counts;
+        state.history = prev.history;
+        state.settings = Object.assign({showOdds:true}, prev.settings||{showOdds:true});
+        render();
+      }
+    })();
+  </script>
+</body>
+</html>
