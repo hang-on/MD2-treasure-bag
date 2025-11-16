@@ -6,541 +6,514 @@
   <title>Massive Darkness 2 – Treasure Bag</title>
   <style>
     :root{
-      --bg:#0b0f13;--panel:#121821;--muted:#97a1b1;--text:#e9eef5;--accent:#66d9ff;
-      --common:#4caf50;--rare:#2196f3;--epic:#9c27b0;--warning:#ff8b5a;--ok:#8bffb5;
-      --card:#0f141c;--border:#1c2533;--shadow:0 8px 30px rgba(0,0,0,.35);
+      --bg:#05070b;--panel:#101521;--muted:#96a0b2;--text:#e9eef5;--accent:#66d9ff;
+      --common:#4caf50;--rare:#2196f3;--epic:#9c27b0;
+      --card:#0c111b;--border:#1b2434;--shadow:0 10px 30px rgba(0,0,0,.55);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;background:radial-gradient(1200px 600px at 20% -10%,#132030 0%,transparent 55%),
-                 radial-gradient(1000px 800px at 120% 0%,#1b2435 0%,transparent 60%),var(--bg);color:var(--text);
-         font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;}
+    body{
+      margin:0;
+      background:radial-gradient(1100px 600px at 10% -10%,#141f32 0,transparent 55%),
+                 radial-gradient(900px 700px at 120% -10%,#1b2437 0,transparent 60%),
+                 var(--bg);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+      font-size:15px;
+    }
 
-    .wrap{max-width:920px;margin:40px auto;padding:24px}
-    .header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
-    .title{font-weight:700;font-size:clamp(20px,3.2vw,28px);letter-spacing:.2px}
-    .subtitle{color:var(--muted);font-size:14px}
+    .wrap{max-width:560px;margin:10px auto;padding:12px}
 
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-    @media (max-width:880px){.grid{grid-template-columns:1fr;}}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+      border-radius:16px;
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      padding:12px 14px;
+    }
 
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-          border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
-    .card h2{margin:2px 0 14px;font-size:16px;font-weight:700;letter-spacing:.3px}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin-bottom:8px;
+    }
+    .title{
+      font-size:17px;
+      font-weight:700;
+    }
+    .subtitle{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
 
-    .controls{display:grid;grid-template-columns:1fr;gap:14px}
+    button{
+      appearance:none;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg,#1a2333,#101724);
+      color:var(--text);
+      padding:8px 12px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .05s ease,filter .15s ease,opacity .15s ease;
+    }
+    button:hover{filter:brightness(1.05)}
+    button:active{transform:translateY(1px)}
+    button:disabled{opacity:.55;cursor:not-allowed}
 
-    .row{display:flex;align-items:center;gap:12px}
-    .row label{min-width:92px;display:flex;align-items:center;gap:8px}
+    .primary{background:linear-gradient(180deg,#57c7ff,#3493df);border-color:transparent}
+    .warn{background:linear-gradient(180deg,#ff9a7a,#e4683e);border-color:transparent}
 
-    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px;border:1px solid var(--border);background:var(--card)}
+    .row{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-top:4px;
+    }
+
+    .badge{
+      min-width:70px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:13px;
+      font-weight:600;
+      color:var(--muted);
+    }
     .dot{width:10px;height:10px;border-radius:50%}
     .dot.common{background:var(--common)}
     .dot.rare{background:var(--rare)}
     .dot.epic{background:var(--epic)}
 
-    .letter{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;font-size:12px;font-weight:900;color:#0a0f15}
+    .step{
+      padding:4px 9px;
+      border-radius:999px;
+      font-weight:800;
+      min-width:28px;
+      border:1px solid var(--border);
+      background:#050910;
+      line-height:1;
+      font-size:16px;
+    }
+
+    input[type=number]{
+      width:64px;
+      text-align:center;
+      background:#050910;
+      border-radius:10px;
+      border:1px solid var(--border);
+      padding:6px 4px;
+      color:var(--text);
+      font-size:15px;
+    }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{opacity:1}
+
+    .hint{
+      flex:1;
+      text-align:right;
+      font-size:11px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .controlsBlock{
+      margin-top:4px;
+    }
+
+    .bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin:6px 0 4px;
+    }
+    .totalLabel{
+      font-size:13px;
+      color:var(--muted);
+    }
+    .totalValue{
+      font-size:15px;
+      font-weight:700;
+    }
+
+    .drawArea{
+      margin-top:4px;
+      border-radius:12px;
+      border:1px dashed var(--border);
+      min-height:90px;
+      max-height:110px;
+      display:grid;
+      place-items:center;
+      background:radial-gradient(circle at 10% 0%,rgba(255,255,255,.06),transparent 55%),
+                 radial-gradient(circle at 90% 100%,rgba(255,255,255,.05),transparent 55%),
+                 #050910;
+      overflow:hidden;
+    }
+    .token{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--card);
+      font-weight:800;
+      font-size:17px;
+      letter-spacing:.2px;
+      box-shadow:0 6px 18px rgba(0,0,0,.45);
+      opacity:0;
+      transform:translateY(8px);
+      animation:pop .35s ease forwards;
+    }
+    .token .dot{width:13px;height:13px}
+    @keyframes pop{to{opacity:1;transform:translateY(0)}}
+
+    .sectionLabel{
+      margin-top:6px;
+      margin-bottom:4px;
+      font-size:13px;
+      color:var(--muted);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .inuse{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      min-height:36px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 9px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#050910;
+      font-size:12px;
+      font-weight:700;
+    }
+    .chip:hover{filter:brightness(1.05)}
+    .letter{
+      display:inline-grid;
+      place-items:center;
+      width:18px;height:18px;
+      border-radius:50%;
+      font-size:11px;
+      font-weight:900;
+      color:#05070b;
+    }
     .letter.common{background:var(--common)}
     .letter.rare{background:var(--rare)}
     .letter.epic{background:var(--epic)}
 
-    input[type=number]{width:110px;background:#0b111a;border:1px solid var(--border);color:var(--text);
-      padding:10px 12px;border-radius:10px;font-size:15px}
-    input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{opacity:1}
+    .footer{
+      margin-top:6px;
+      font-size:11px;
+      color:var(--muted);
+    }
 
-    .hint{color:var(--muted);font-size:12px}
-
-    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-    button{appearance:none;border:1px solid var(--border);background:linear-gradient(180deg,#1a2331,#121a25);
-      color:var(--text);padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:transform .04s ease,opacity .2s ease,filter .2s ease}
-    button:hover{filter:brightness(1.05)}
-    button:active{transform:translateY(1px)}
-    button.primary{border-color:transparent;background:linear-gradient(180deg,#57c7ff,#379bdf)}
-    button.warn{background:linear-gradient(180deg,#ff9a7a,#e66b42);border-color:transparent}
-    button.ghost{background:transparent}
-    button:disabled{opacity:.5;cursor:not-allowed}
-
-    .drawArea{display:grid;place-items:center;height:210px;border-radius:16px;border:1px dashed var(--border);
-      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));position:relative;overflow:hidden}
-    .token{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:999px;border:1px solid var(--border);
-       font-size:18px;font-weight:800;letter-spacing:.2px;background:var(--card);box-shadow:0 4px 16px rgba(0,0,0,.35);opacity:0;transform:translateY(12px);animation:pop .4s ease forwards}
-    .token .dot{width:14px;height:14px}
-    @keyframes pop{to{opacity:1;transform:translateY(0)}}
-
-    .stats{display:flex;gap:14px;flex-wrap:wrap}
-    .stat{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--border);
-      border-radius:12px;padding:10px 12px;font-weight:700}
-    .stat small{display:block;color:var(--muted);font-weight:600}
-
-    .history{display:flex;gap:8px;flex-wrap:wrap}
-    .pill{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:var(--card);font-weight:700;font-size:12px}
-
-    .inuse{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-    .inuse .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);
-      border-radius:999px;background:var(--card);font-weight:800;font-size:12px;cursor:pointer}
-    .inuse .chip:hover{filter:brightness(1.05)}
-
-    .footer{margin-top:10px;color:var(--muted);font-size:12px}
-    a{color:var(--accent)}
-
-    .toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
-    .toggle input{accent-color:#57c7ff}
-
-    .step{padding:4px 10px;border-radius:999px;font-weight:700;min-width:32px;border:1px solid var(--border);background:#0b111a;line-height:1;}
-    .row .step{flex-shrink:0;}
-
-    /* Mobile (iPhone portrait) optimizations */
-    @media (max-width: 430px){
-      .wrap{max-width:100%;padding:16px;margin:12px auto}
-      .grid{grid-template-columns:1fr;gap:12px}
-      .row{flex-wrap:wrap}
-      .badge{font-size:14px}
-      input[type=number]{width:100%;font-size:18px;padding:14px 12px}
-      .actions{display:grid;grid-template-columns:1fr;gap:8px}
-      button{width:100%;min-height:44px;padding:14px 16px;font-size:16px;border-radius:14px}
-      .drawArea{height:180px}
-      .stats{gap:8px}
-      .stat{flex:1}
-      .inuse{gap:6px}
+    @media (max-width:480px){
+      .wrap{margin:4px auto;padding:8px}
+      .card{padding:10px 10px}
+      .title{font-size:16px}
+      .drawArea{min-height:80px;max-height:96px}
+      .row{gap:4px}
+      .badge{min-width:62px;font-size:12px}
+      .step{min-width:26px;padding:4px 7px}
+      input[type=number]{width:56px}
+      .hint{display:none}
+      .bar{flex-wrap:wrap;gap:4px}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="header">
-      <div>
-        <div class="title">Massive Darkness 2 — Treasure Bag</div>
-        <div class="subtitle">Adjust the <em>total</em> tokens for Common, Rare, and Epic. Drawing moves a token to the <strong>In use</strong> tray (without replacement). Click an in-use token to return it to the bag.</div>
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <div class="title">Massive Darkness 2 — Bag</div>
+          <div class="subtitle">Tap − / + to adjust tokens. Draw moves a token to <strong>In use</strong>. Tap a token in use to return it.</div>
+        </div>
+        <button id="resetBtn" class="warn" type="button">Reset</button>
       </div>
-    </div>
 
-    <div class="grid">
-      <section class="card">
-        <h2>Bag setup</h2>
-        <div class="controls" role="group" aria-label="Treasure totals">
-          <div class="row">
-            <label class="badge" for="commonInput"><span class="dot common"></span> Common</label>
-            <input id="commonInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Common tokens total" />
-            <span class="hint" id="commonHint"></span>
-          </div>
-          <div class="row">
-            <label class="badge" for="rareInput"><span class="dot rare"></span> Rare</label>
-            <input id="rareInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Rare tokens total" />
-            <span class="hint" id="rareHint"></span>
-          </div>
-          <div class="row">
-            <label class="badge" for="epicInput"><span class="dot epic"></span> Epic</label>
-            <input id="epicInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Epic tokens total" />
-            <span class="hint" id="epicHint"></span>
-          </div>
-          <div class="actions">
-            <button id="drawBtn" type="button" class="primary" title="Draw one token (without replacement)">Draw token</button>
-            <button id="resetBtn" type="button" class="warn" title="Reset totals to defaults and clear In use">Reset</button>
-            <label class="toggle" title="Toggle visibility of odds">
-              <input type="checkbox" id="toggleOdds" checked /> Show odds
-            </label>
-          </div>
+      <div class="controlsBlock" role="group" aria-label="Treasure totals">
+        <div class="row">
+          <div class="badge"><span class="dot common"></span>Common</div>
+          <button class="step" type="button" data-kind="common" data-delta="-1">−</button>
+          <input id="commonInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Common tokens total" />
+          <button class="step" type="button" data-kind="common" data-delta="1">+</button>
+          <div class="hint" id="commonHint"></div>
         </div>
+        <div class="row">
+          <div class="badge"><span class="dot rare"></span>Rare</div>
+          <button class="step" type="button" data-kind="rare" data-delta="-1">−</button>
+          <input id="rareInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Rare tokens total" />
+          <button class="step" type="button" data-kind="rare" data-delta="1">+</button>
+          <div class="hint" id="rareHint"></div>
+        </div>
+        <div class="row">
+          <div class="badge"><span class="dot epic"></span>Epic</div>
+          <button class="step" type="button" data-kind="epic" data-delta="-1">−</button>
+          <input id="epicInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Epic tokens total" />
+          <button class="step" type="button" data-kind="epic" data-delta="1">+</button>
+          <div class="hint" id="epicHint"></div>
+        </div>
+      </div>
 
-        <div class="footer">Tip: Inputs set the <em>total</em> per type. The bag contains the total minus the tokens currently in use.</div>
-      </section>
+      <div class="bar">
+        <div class="totalLabel">In bag: <span class="totalValue" id="total">0</span> tokens</div>
+        <button id="drawBtn" class="primary" type="button">Draw token</button>
+      </div>
 
-      <section class="card">
-        <h2>Draw</h2>
-        <div class="drawArea" id="drawArea" aria-live="polite" aria-atomic="true">
-          <div class="hint">Nothing drawn yet.</div>
-        </div>
-        <div class="stats" style="margin-top:12px">
-          <div class="stat"><small>Remaining in bag</small><span id="total">0</span></div>
-          <div class="stat" id="oddsStat"><small>Next draw odds</small>
-            <span id="odds">—</span>
-          </div>
-        </div>
-        <div style="margin-top:12px">
-          <h2 style="margin-bottom:8px">In use</h2>
-          <div class="inuse" id="inUseTray" aria-live="polite" aria-atomic="false"></div>
-        </div>
-        <div style="margin-top:12px">
-          <h2 style="margin-bottom:8px">History</h2>
-          <div class="history" id="history"></div>
-        </div>
-      </section>
-    </div>
+      <div class="drawArea" id="drawArea" aria-live="polite" aria-atomic="true">
+        <div class="hint">Nothing drawn yet.</div>
+      </div>
 
-    <div class="footer" style="margin-top:18px">
-      Massive Darkness 2 is © CMON. This is a fan-made helper with no affiliation. Use at your own table 😊
+      <div class="sectionLabel">
+        <span>In use</span>
+        <span style="font-size:11px;color:var(--muted)">Tap to return</span>
+      </div>
+      <div class="inuse" id="inUseTray" aria-live="polite" aria-atomic="false"></div>
+
+      <div class="footer">Massive Darkness 2 is © CMON. This is a fan-made helper with no affiliation.</div>
     </div>
   </div>
 
   <script>
-  const inputs = {
-    common: document.getElementById('commonInput'),
-    rare: document.getElementById('rareInput'),
-    epic: document.getElementById('epicInput')
-  };
-  const hints = {
-    common: document.getElementById('commonHint'),
-    rare: document.getElementById('rareHint'),
-    epic: document.getElementById('epicHint')
-  };
-  const drawBtn    = document.getElementById('drawBtn');
-  const resetBtn   = document.getElementById('resetBtn');
-  const drawArea   = document.getElementById('drawArea');
-  const totalEl    = document.getElementById('total');
-  const oddsEl     = document.getElementById('odds');
-  const oddsStat   = document.getElementById('oddsStat');
-  const inUseTray  = document.getElementById('inUseTray');
-  const historyEl  = document.getElementById('history');
-  const toggleOdds = document.getElementById('toggleOdds');
-
-  const state = {
-    counts: { common: 0, rare: 0, epic: 0 },    // total per type
-    inUse: [],                                  // ['common','rare',...]
-    lastDrawn: null,                            // 'common' | 'rare' | 'epic' | null
-    settings: { showOdds: true }
-  };
-
-  // ---- persistence ----
-  function save() {
-    try {
-      localStorage.setItem('md2_bag_state', JSON.stringify(state));
-    } catch (_) {}
-  }
-
-  function load() {
-    let loaded = false;
-    try {
-      const raw = localStorage.getItem('md2_bag_state');
-      if (raw) {
-        const s = JSON.parse(raw);
-        if (s && s.counts)          { state.counts   = s.counts;   loaded = true; }
-        if (Array.isArray(s.inUse)) { state.inUse    = s.inUse;    loaded = true; }
-        if (s && typeof s.lastDrawn !== 'undefined') {
-          state.lastDrawn = s.lastDrawn;
-          loaded = true;
-        }
-        if (s && s.settings) {
-          state.settings = Object.assign({ showOdds: true }, s.settings);
-          loaded = true;
-        }
-      }
-    } catch (_) {}
-    return loaded;
-  }
-
-  // ---- helpers ----
-  const clampInt = (v) => {
-    v = parseInt(v, 10);
-    return isNaN(v) || v < 0 ? 0 : v;
-  };
-
-  const inUseCount = (kind) =>
-    state.inUse.filter((k) => k === kind).length;
-
-  function remaining() {
-    return {
-      common: Math.max(0, state.counts.common - inUseCount('common')),
-      rare:   Math.max(0, state.counts.rare   - inUseCount('rare')),
-      epic:   Math.max(0, state.counts.epic   - inUseCount('epic'))
+    const inputs = {
+      common: document.getElementById('commonInput'),
+      rare: document.getElementById('rareInput'),
+      epic: document.getElementById('epicInput')
     };
-  }
+    const hints = {
+      common: document.getElementById('commonHint'),
+      rare: document.getElementById('rareHint'),
+      epic: document.getElementById('epicHint')
+    };
+    const drawBtn   = document.getElementById('drawBtn');
+    const resetBtn  = document.getElementById('resetBtn');
+    const drawArea  = document.getElementById('drawArea');
+    const totalEl   = document.getElementById('total');
+    const inUseTray = document.getElementById('inUseTray');
 
-  const remainingTotal = () => {
-    const r = remaining();
-    return r.common + r.rare + r.epic;
-  };
+    const state = {
+      counts: { common: 0, rare: 0, epic: 0 }, // total per type
+      inUse: [],                                // ['common','rare',...]
+      lastDrawn: null                           // 'common' | 'rare' | 'epic' | null
+    };
 
-  function updateFromInputs() {
-    // totals cannot go below tokens already in use
-    const minC = inUseCount('common');
-    const minR = inUseCount('rare');
-    const minE = inUseCount('epic');
-
-    inputs.common.min = String(minC);
-    inputs.rare.min   = String(minR);
-    inputs.epic.min   = String(minE);
-
-    const c = clampInt(inputs.common.value);
-    const r = clampInt(inputs.rare.value);
-    const e = clampInt(inputs.epic.value);
-
-    state.counts.common = Math.max(minC, c);
-    state.counts.rare   = Math.max(minR, r);
-    state.counts.epic   = Math.max(minE, e);
-
-    render();
-    save();
-  }
-
-  function setInputsFromState() {
-    inputs.common.value = state.counts.common;
-    inputs.rare.value   = state.counts.rare;
-    inputs.epic.value   = state.counts.epic;
-
-    inputs.common.min = String(inUseCount('common'));
-    inputs.rare.min   = String(inUseCount('rare'));
-    inputs.epic.min   = String(inUseCount('epic'));
-
-    toggleOdds.checked = !!state.settings.showOdds;
-  }
-
-  function showToken(kind) {
-    drawArea.innerHTML = '';
-    const el = document.createElement('div');
-    el.className = 'token';
-    el.setAttribute('role', 'status');
-    el.setAttribute('aria-label', kind + ' drawn');
-
-    const dot = document.createElement('span');
-    dot.className = `dot ${kind}`;
-
-    const label = document.createElement('span');
-    label.textContent = kind.charAt(0).toUpperCase() + kind.slice(1);
-
-    el.appendChild(dot);
-    el.appendChild(label);
-    drawArea.appendChild(el);
-  }
-
-  function draw() {
-    const r = remaining();
-    const t = r.common + r.rare + r.epic;
-    if (t <= 0) return;
-
-    const roll = Math.random() * t;
-    let pick;
-    if (roll < r.common) {
-      pick = 'common';
-    } else if (roll < r.common + r.rare) {
-      pick = 'rare';
-    } else {
-      pick = 'epic';
+    function save(){
+      try{ localStorage.setItem('md2_bag_state', JSON.stringify(state)); }catch(_){ }
     }
 
-    state.inUse.push(pick);
-    state.lastDrawn = pick;
-
-    showToken(pick);
-    render();
-    save();
-  }
-
-  function reset() {
-    state.counts    = { common: 10, rare: 5, epic: 0 };
-    state.inUse     = [];
-    state.lastDrawn = null;
-
-    drawArea.innerHTML = '<div class="hint">Nothing drawn yet.</div>';
-    render();
-    save();
-  }
-
-  function returnFromUse(index) {
-    if (index < 0 || index >= state.inUse.length) return;
-    state.inUse.splice(index, 1);
-    // lastDrawn remains as the last token that was drawn (visual freeze of last draw)
-    render();
-    save();
-  }
-
-  function adjustCount(kind, delta) {
-    const min = inUseCount(kind);
-    let next = state.counts[kind] + delta;
-    if (next < min) next = min;
-    if (next < 0) next = 0;
-    state.counts[kind] = next;
-    render();
-    save();
-  }
-
-  function setupSteppers() {
-    ['common', 'rare', 'epic'].forEach((kind) => {
-      const input = inputs[kind];
-      if (!input) return;
-      const row = input.parentElement; // .row
-      const dec = document.createElement('button');
-      dec.type = 'button';
-      dec.className = 'step';
-      dec.textContent = '−';
-      dec.title = 'Decrease ' + kind;
-      dec.addEventListener('click', () => adjustCount(kind, -1));
-
-      const inc = document.createElement('button');
-      inc.type = 'button';
-      inc.className = 'step';
-      inc.textContent = '+';
-      inc.title = 'Increase ' + kind;
-      inc.addEventListener('click', () => adjustCount(kind, +1));
-
-      row.insertBefore(dec, input);
-      row.insertBefore(inc, input.nextSibling);
-    });
-  }
-
-  function render() {
-    setInputsFromState();
-
-    const r = remaining();
-    hints.common.textContent = `${state.counts.common} total · ${r.common} in bag`;
-    hints.rare.textContent   = `${state.counts.rare} total · ${r.rare} in bag`;
-    hints.epic.textContent   = `${state.counts.epic} total · ${r.epic} in bag`;
-
-    const t = r.common + r.rare + r.epic;
-    totalEl.textContent = t;
-    drawBtn.disabled = t === 0;
-
-    // odds
-    oddsStat.style.display = state.settings.showOdds ? '' : 'none';
-    if (t > 0) {
-      const pC = Math.round((r.common / t) * 100);
-      const pR = Math.round((r.rare  / t) * 100);
-      const pE = Math.round((r.epic  / t) * 100);
-      oddsEl.innerHTML =
-        `<span class="pill"><span class="dot common"></span> ${pC}%</span> ` +
-        `<span class="pill"><span class="dot rare"></span> ${pR}%</span> ` +
-        `<span class="pill"><span class="dot epic"></span> ${pE}%</span>`;
-    } else {
-      oddsEl.textContent = '—';
-      if (!drawArea.querySelector('.token')) {
-        drawArea.innerHTML = '<div class="hint">Nothing in the bag.</div>';
-      }
+    function load(){
+      let loaded = false;
+      try{
+        const raw = localStorage.getItem('md2_bag_state');
+        if(raw){
+          const s = JSON.parse(raw);
+          if(s && s.counts){ state.counts = s.counts; loaded = true; }
+          if(Array.isArray(s.inUse)){ state.inUse = s.inUse; loaded = true; }
+          if(s && typeof s.lastDrawn !== 'undefined'){ state.lastDrawn = s.lastDrawn; loaded = true; }
+        }
+      }catch(_){ }
+      return loaded;
     }
 
-    // in use tray
-    inUseTray.innerHTML = '';
-    state.inUse.forEach((kind, idx) => {
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'chip';
-      chip.title = `Return ${kind} to bag`;
+    const clampInt = (v)=>{ v=parseInt(v,10); return isNaN(v)||v<0?0:v; };
 
-      const bubble = document.createElement('span');
-      bubble.className = `letter ${kind}`;
-      bubble.textContent = kind[0].toUpperCase();
+    const inUseCount = (kind)=> state.inUse.filter(k=>k===kind).length;
 
+    function remaining(){
+      return {
+        common: Math.max(0, state.counts.common - inUseCount('common')),
+        rare:   Math.max(0, state.counts.rare   - inUseCount('rare')),
+        epic:   Math.max(0, state.counts.epic   - inUseCount('epic'))
+      };
+    }
+
+    const remainingTotal = ()=>{ const r=remaining(); return r.common+r.rare+r.epic; };
+
+    function updateFromInputs(){
+      const minC = inUseCount('common');
+      const minR = inUseCount('rare');
+      const minE = inUseCount('epic');
+
+      inputs.common.min = String(minC);
+      inputs.rare.min   = String(minR);
+      inputs.epic.min   = String(minE);
+
+      const c = clampInt(inputs.common.value);
+      const r = clampInt(inputs.rare.value);
+      const e = clampInt(inputs.epic.value);
+
+      state.counts.common = Math.max(minC,c);
+      state.counts.rare   = Math.max(minR,r);
+      state.counts.epic   = Math.max(minE,e);
+
+      render(); save();
+    }
+
+    function setInputsFromState(){
+      inputs.common.value = state.counts.common;
+      inputs.rare.value   = state.counts.rare;
+      inputs.epic.value   = state.counts.epic;
+
+      inputs.common.min = String(inUseCount('common'));
+      inputs.rare.min   = String(inUseCount('rare'));
+      inputs.epic.min   = String(inUseCount('epic'));
+    }
+
+    function showToken(kind){
+      drawArea.innerHTML = '';
+      const el = document.createElement('div');
+      el.className = 'token';
+      el.setAttribute('role','status');
+      el.setAttribute('aria-label',kind+' drawn');
+      const dot = document.createElement('span');
+      dot.className = 'dot '+kind;
       const label = document.createElement('span');
-      label.textContent = kind.charAt(0).toUpperCase() + kind.slice(1);
+      label.textContent = kind.charAt(0).toUpperCase()+kind.slice(1);
+      el.append(dot,label);
+      drawArea.appendChild(el);
+    }
 
-      chip.append(bubble, label);
-      chip.addEventListener('click', () => returnFromUse(idx));
-      inUseTray.appendChild(chip);
+    function draw(){
+      const r = remaining();
+      const t = r.common+r.rare+r.epic;
+      if(t<=0) return;
+      const roll = Math.random()*t;
+      let pick;
+      if(roll<r.common) pick='common';
+      else if(roll<r.common+r.rare) pick='rare';
+      else pick='epic';
+
+      state.inUse.push(pick);
+      state.lastDrawn = pick;
+      showToken(pick);
+      render(); save();
+    }
+
+    function reset(){
+      state.counts = { common:10, rare:5, epic:0 };
+      state.inUse = [];
+      state.lastDrawn = null;
+      drawArea.innerHTML = '<div class="hint">Nothing drawn yet.</div>';
+      render(); save();
+    }
+
+    function returnFromUse(index){
+      if(index<0 || index>=state.inUse.length) return;
+      state.inUse.splice(index,1);
+      // keep lastDrawn as last visual draw
+      render(); save();
+    }
+
+    function adjustCount(kind,delta){
+      const min = inUseCount(kind);
+      let next = state.counts[kind] + delta;
+      if(next<min) next=min;
+      if(next<0) next=0;
+      state.counts[kind] = next;
+      render(); save();
+    }
+
+    function render(){
+      setInputsFromState();
+      const r = remaining();
+      hints.common.textContent = `${state.counts.common} total · ${r.common} in bag`;
+      hints.rare.textContent   = `${state.counts.rare} total · ${r.rare} in bag`;
+      hints.epic.textContent   = `${state.counts.epic} total · ${r.epic} in bag`;
+
+      const t = r.common+r.rare+r.epic;
+      totalEl.textContent = t;
+      drawBtn.disabled = t===0;
+
+      inUseTray.innerHTML = '';
+      state.inUse.forEach((kind,idx)=>{
+        const chip = document.createElement('button');
+        chip.type='button';
+        chip.className='chip';
+        chip.title='Return '+kind+' to bag';
+        const bubble=document.createElement('span');
+        bubble.className='letter '+kind;
+        bubble.textContent=kind[0].toUpperCase();
+        const label=document.createElement('span');
+        label.textContent=kind.charAt(0).toUpperCase()+kind.slice(1);
+        chip.append(bubble,label);
+        chip.addEventListener('click',()=>returnFromUse(idx));
+        inUseTray.appendChild(chip);
+      });
+    }
+
+    // wiring
+    Object.keys(inputs).forEach(k=>{
+      inputs[k].addEventListener('input',updateFromInputs);
+      inputs[k].addEventListener('change',updateFromInputs);
     });
 
-    // history section disabled: ensure it stays empty
-    if (historyEl) historyEl.innerHTML = '';
-  }
+    for(const btn of document.querySelectorAll('.step')){
+      const kind = btn.getAttribute('data-kind');
+      const delta = parseInt(btn.getAttribute('data-delta'),10);
+      btn.addEventListener('click',()=>adjustCount(kind,delta));
+    }
 
-  // wiring
-  Object.keys(inputs).forEach((k) => {
-    inputs[k].addEventListener('input', updateFromInputs);
-    inputs[k].addEventListener('change', updateFromInputs);
-  });
-  drawBtn.addEventListener('click', draw);
-  resetBtn.addEventListener('click', reset);
-  toggleOdds.addEventListener('change', () => {
-    state.settings.showOdds = toggleOdds.checked;
+    drawBtn.addEventListener('click',draw);
+    resetBtn.addEventListener('click',reset);
+
+    // init
+    const loaded = load();
+    if(!loaded){
+      state.counts = { common:10, rare:5, epic:0 };
+      state.inUse = [];
+      state.lastDrawn = null;
+    }
+    if(state.lastDrawn){
+      showToken(state.lastDrawn);
+    } else {
+      drawArea.innerHTML = '<div class="hint">Nothing drawn yet.</div>';
+    }
     render();
     save();
-  });
 
-  setupSteppers();
+    // --- console self-tests (non-destructive) ---
+    (function runTests(){
+      const deep = o=>JSON.parse(JSON.stringify(o));
+      const prev = deep(state);
+      try{
+        reset();
+        console.assert(state.counts.common===10&&state.counts.rare===5&&state.counts.epic===0,'Reset 10/5/0 failed');
+        console.assert(state.inUse.length===0,'Reset did not clear inUse');
 
-  // init — load previous session if available, otherwise defaults
-  const loaded = load();
-  if (!loaded) {
-    state.counts    = { common: 10, rare: 5, epic: 0 };
-    state.inUse     = [];
-    state.lastDrawn = null;
-  }
+        const before=remainingTotal();
+        draw();
+        console.assert(state.inUse.length===1,'Draw did not add inUse');
+        console.assert(remainingTotal()===before-1,'Remaining not reduced');
 
-  // Restore last drawn token visually if present; otherwise show default hint
-  if (state.lastDrawn) {
-    showToken(state.lastDrawn);
-  } else {
-    drawArea.innerHTML = '<div class="hint">Nothing drawn yet.</div>';
-  }
-  render();
-  save();
+        returnFromUse(0);
+        console.assert(state.inUse.length===0,'Return did not remove');
 
-  // --- Console self-tests (non-destructive) ---
-  (function runTests() {
-    const deepClone = (o) => JSON.parse(JSON.stringify(o));
-    const prev = deepClone(state);
-    try {
-      // Test 1: reset sets defaults and clears inUse
-      reset();
-      console.assert(
-        state.counts.common === 10 &&
-        state.counts.rare   === 5 &&
-        state.counts.epic   === 0,
-        'Reset did not set 10/5/0'
-      );
-      console.assert(
-        state.inUse.length === 0,
-        'Reset did not clear inUse'
-      );
-
-      // Test 2: draw moves a token to inUse and reduces remaining, and sets lastDrawn
-      const beforeRemain = remainingTotal();
-      draw();
-      console.assert(state.inUse.length === 1, 'Draw did not add token to inUse');
-      console.assert(remainingTotal() === beforeRemain - 1, 'Remaining did not decrease after draw');
-      console.assert(state.lastDrawn !== null, 'lastDrawn not updated on draw');
-
-      // Test 3: returnFromUse returns token and increases remaining
-      const prevRemain = remainingTotal();
-      returnFromUse(0);
-      console.assert(state.inUse.length === 0, 'Return did not remove token from inUse');
-      console.assert(remainingTotal() === prevRemain + 1, 'Remaining did not increase after return');
-
-      // Test 4: inputs cannot be reduced below in-use count
-      state.inUse = ['common', 'common', 'rare'];
-      render();
-      inputs.common.value = 1; // below in-use (2)
-      inputs.rare.value   = 0; // below in-use (1)
-      updateFromInputs();
-      console.assert(
-        state.counts.common >= 2 && state.counts.rare >= 1,
-        'Inputs allowed totals below in-use count'
-      );
-
-      // Test 5: odds sum ~100 when remaining>0
-      state.counts = { common: 10, rare: 5, epic: 0 };
-      state.inUse  = [];
-      render();
-      const r = remaining();
-      const t = r.common + r.rare + r.epic;
-      const sum = Math.round((r.common / t) * 100) +
-                  Math.round((r.rare  / t) * 100) +
-                  Math.round((r.epic  / t) * 100);
-      console.assert(Math.abs(sum - 100) <= 1, 'Odds do not sum to ~100');
-
-      // Test 6: draw disabled when remaining is 0
-      state.counts = { common: 0, rare: 0, epic: 0 };
-      state.inUse  = [];
-      render();
-      console.assert(drawBtn.disabled === true, 'Draw button should be disabled when bag empty');
-
-      // Test 7: stepper minus does not go below in-use count
-      state.counts = { common: 5, rare: 0, epic: 0 };
-      state.inUse  = ['common','common'];
-      render();
-      adjustCount('common', -10);
-      console.assert(state.counts.common >= 2, 'Stepper allowed count below in-use');
-    } catch (e) {
-      console.error('Self-tests failed:', e);
-    } finally {
-      // restore user state, including lastDrawn and visual Draw area
-      Object.assign(state, prev);
-      if (state.lastDrawn) {
-        showToken(state.lastDrawn);
-      } else {
-        drawArea.innerHTML = '<div class="hint">Nothing drawn yet.</div>';
+        state.inUse=['common','common'];
+        state.counts.common=2;
+        adjustCount('common',-5);
+        console.assert(state.counts.common>=2,'Stepper dropped below inUse');
+      }catch(e){
+        console.error('Self-tests failed:',e);
+      }finally{
+        Object.assign(state,prev);
+        if(state.lastDrawn){showToken(state.lastDrawn);}else{drawArea.innerHTML='<div class="hint">Nothing drawn yet.</div>';}
+        render(); save();
       }
-      render();
-      save();
-    }
-  })();
-</script>
+    })();
+  </script>
 </body>
 </html>
